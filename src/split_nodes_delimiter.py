@@ -12,6 +12,8 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
                 raise Exception(f"Invalid Markdown syntax: Unmatched opening '{delimiter}' delimiter")
             for index in range(len(sections)):
                 section = sections[index]
+                if section == "":
+                        continue
                 match index % 2:
                     case 0:
                         new_node = TextNode(section, TextType.PLAIN_TEXT)
