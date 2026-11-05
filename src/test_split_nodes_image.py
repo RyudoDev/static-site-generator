@@ -52,3 +52,31 @@ class Test_split_nodes_image(unittest.TestCase):
             TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
         ]
         self.assertEqual(new_nodes, theoretical_new_nodes)
+
+    def test_emtpy_string(self):
+        node_one = TextNode("", TextType.PLAIN_TEXT)
+        new_nodes = split_nodes_image([node_one])
+        self.assertEqual(new_nodes, [node_one])
+
+    def test_image_at_start(self):
+        node = TextNode("![image](https://i.imgur.com/zjjcJKZ.png) is at the start", TextType.PLAIN_TEXT)
+        new_nodes = split_nodes_image([node])
+        theoretical_new_nodes = [
+            TextNode("image", TextType.IMAGE,"https://i.imgur.com/zjjcJKZ.png"),
+            TextNode(" is at the start", TextType.PLAIN_TEXT),
+        ]
+        self.assertEqual(theoretical_new_nodes, new_nodes)
+
+    def test_image_and_link(self):
+        node = TextNode(
+            "This is text with a [link](https://www.google.com) and an ![image](https://i.imgur.com/zjjcJKZ.png)",
+            TextType.PLAIN_TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        theoretical_new_nodes = [
+            TextNode("This is text with a [link](https://www.google.com) and an ", TextType.PLAIN_TEXT),
+            TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+        ]
+        self.assertListEqual( theoretical_new_nodes,
+            new_nodes,
+        )
